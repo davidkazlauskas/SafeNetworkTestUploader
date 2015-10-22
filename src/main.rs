@@ -1,5 +1,4 @@
 extern crate safe_core;
-extern crate safe_ffi;
 extern crate safe_nfs;
 
 use std::env;
