@@ -37,7 +37,14 @@ fn login() -> Client {
         }
     }
 
-    Client::log_in("moo".to_string(),"goo".to_string(),"goo".to_string()).unwrap()
+    let res = Client::log_in(keyword.clone(),pin.clone(),password.clone());
+    match res {
+        Ok(login) => return login,
+        Err(err) => {
+            return Client::create_account(
+                keyword.clone(),pin.clone(),password.clone()).unwrap();
+        }
+    }
 }
 
 fn main() {
