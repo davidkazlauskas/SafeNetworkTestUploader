@@ -6,3 +6,4 @@ authors = ["David <david@templatious.org>"]
 [dependencies]
 safe_core = "0.3.0"
 safe_ffi = { git = "https://github.com/maidsafe/safe_ffi.git" }
+safe_nfs = { git = "https://github.com/maidsafe/safe_nfs.git" }
