@@ -53,7 +53,7 @@ fn upload_routine(client: Client,local_path: String,remote_path: String) {
 
 }
 
-fn create_sub_directory(client: &mut Client,path: String) {
+fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
     let dir_helper = safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 }
 
