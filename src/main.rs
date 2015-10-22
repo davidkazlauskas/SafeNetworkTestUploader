@@ -49,7 +49,7 @@ fn login() -> Client {
     }
 }
 
-fn upload_routine(client: Client,local_path: String,remote_path: String) {
+fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
 
 }
 
@@ -75,9 +75,11 @@ fn main() {
     let login = login();
     println!("Logged in");
 
+    let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
+
     let command = the_args[1].clone();
     if command == "upl" {
         assert!( the_args.len() == 4, "Upload routine expects three arguments." );
-        upload_routine(login,the_args[2].clone(),the_args[3].clone());
+        upload_routine(login_arc,the_args[2].clone(),the_args[3].clone());
     }
 }
