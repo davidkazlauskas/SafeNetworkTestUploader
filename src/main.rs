@@ -84,9 +84,10 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
     };
 
     let tokenized = path_tokeniser(remote_path.clone());
+    let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
 
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
-    //file_helper.create(remote_path,Vec::new(),)
+    let mut writer = file_helper.create(remote_path,Vec::new(),final_subdir);
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
