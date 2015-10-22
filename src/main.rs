@@ -18,6 +18,14 @@ fn login() -> Client {
                 Ok(file) => {
                     let reader = BufReader::new(file);
                     let lines : Vec<_> = reader.lines().collect();
+
+                    if lines.len() != 3 {
+                        panic!("Wrong amount of lines! Expected keyword, pin, password (3)");
+                    }
+
+                    keyword = lines[0];
+                    pin = lines[1];
+                    password = lines[2];
                 },
                 Err(err) => {
                     panic!("Could not open file");
