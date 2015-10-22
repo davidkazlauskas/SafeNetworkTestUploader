@@ -49,6 +49,11 @@ fn login() -> Client {
     }
 }
 
+// copy/paste
+pub fn path_tokeniser(the_path: String) -> Vec<String> {
+    the_path.split("/").filter(|a| !a.is_empty()).map(|a| a.to_string()).collect()
+}
+
 fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
     let mut cont : Vec<u8> = Vec::with_capacity(1024 * 1024);
     match File::open(&local_path) {
@@ -56,7 +61,10 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
         Err(err) => panic!("Cannot open local file."),
     };
 
+    let tokenized = path_tokeniser(remote_path.clone());
+
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
+    //file_helper.create(remote_path,Vec::new(),)
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
