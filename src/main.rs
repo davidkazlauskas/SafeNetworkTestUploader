@@ -1,4 +1,5 @@
 extern crate safe_core;
+extern crate safe_ffi;
 
 use std::env;
 use std::io;
@@ -51,7 +52,9 @@ fn main() {
     let the_args : Vec<_> = env::args().collect();
 
     if the_args.len() != 3 || the_args.len() != 4 {
-        println!("Usage: uploadutil <action: upl/dl> <local file> <remote folder>");
+        println!("Usage (upload): uploadutil upl <local file> <remote folder>");
+        println!("Usage (download): uploadutil dl <remote file> <local path>");
+        println!("Usage (mkdir): uploadutil mkdir <remote path>");
         return;
     }
 
