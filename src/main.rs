@@ -50,7 +50,13 @@ fn login() -> Client {
 }
 
 fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
+    let mut cont : Vec<u8> = Vec::with_capacity(1024 * 1024);
+    match File::open(&local_path) {
+        Ok(mut file) => file.read_to_end(&mut cont),
+        Err(err) => panic!("Cannot open local file."),
+    };
 
+    let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
@@ -80,6 +86,6 @@ fn main() {
     let command = the_args[1].clone();
     if command == "upl" {
         assert!( the_args.len() == 4, "Upload routine expects three arguments." );
-        upload_routine(login_arc,the_args[2].clone(),the_args[3].clone());
+        upload_routine(login_arc.clone(),the_args[2].clone(),the_args[3].clone());
     }
 }
