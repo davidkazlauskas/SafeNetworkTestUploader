@@ -48,15 +48,31 @@ fn login() -> Client {
     }
 }
 
+fn upload_routine(client: Client,local_path: String,remote_path: String) {
+
+}
+
+fn print_usage() {
+    println!("Usage (upload): uploadutil upl <local file> <remote folder>");
+    println!("Usage (download): uploadutil dl <remote file> <local path>");
+    println!("Usage (mkdir): uploadutil mkdir <remote path>");
+}
+
 fn main() {
     let the_args : Vec<_> = env::args().collect();
 
     if the_args.len() != 3 || the_args.len() != 4 {
-        println!("Usage (upload): uploadutil upl <local file> <remote folder>");
-        println!("Usage (download): uploadutil dl <remote file> <local path>");
-        println!("Usage (mkdir): uploadutil mkdir <remote path>");
+        print_usage();
         return;
     }
 
+    println!("Logging in...");
     let login = login();
+    println!("Logged in");
+
+    let command = the_args[1].clone();
+    if command == "upl" {
+        assert!( the_args.len() == 4, "Upload routine expects three arguments." );
+        upload_routine(login,the_args[2].clone(),the_args[3].clone());
+    }
 }
