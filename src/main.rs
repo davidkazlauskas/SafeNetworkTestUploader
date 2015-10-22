@@ -5,6 +5,7 @@ extern crate safe_nfs;
 use std::env;
 use std::io;
 use std::io::BufReader;
+use std::io::BufWriter;
 use std::io::prelude::*;
 use std::fs::File;
 use safe_core::client::Client;
@@ -77,6 +78,8 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
 }
 
 fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
+    use safe_nfs::helper::writer::Writer;
+
     let mut cont : Vec<u8> = Vec::with_capacity(1024 * 1024);
     match File::open(&local_path) {
         Ok(mut file) => file.read_to_end(&mut cont),
@@ -87,7 +90,8 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
     let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
 
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
-    let mut writer = file_helper.create(remote_path,Vec::new(),final_subdir);
+    let mut writer = file_helper.create(remote_path,Vec::new(),final_subdir).unwrap();
+    writer.write(&cont,0);
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
