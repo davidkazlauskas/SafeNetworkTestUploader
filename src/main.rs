@@ -54,6 +54,28 @@ pub fn path_tokeniser(the_path: String) -> Vec<String> {
     the_path.split("/").filter(|a| !a.is_empty()).map(|a| a.to_string()).collect()
 }
 
+pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::Mutex<::safe_core::client::Client>>,
+                              tokens            : &Vec<String>,
+                              starting_directory: Option<&::safe_nfs::metadata::directory_key::DirectoryKey>) -> ::safe_nfs::directory_listing::DirectoryListing
+{
+    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
+
+    let mut current_dir_listing = match starting_directory {
+        Some(directory_key) => dir_helper.get(directory_key).unwrap(),
+        None => dir_helper.get_user_root_directory_listing().unwrap(),
+    };
+
+    for it in tokens.iter() {
+        current_dir_listing = {
+            let current_dir_metadata = current_dir_listing.get_sub_directories().iter().find(|a| *a.get_name() == *it)
+                                                                                            .unwrap();
+            dir_helper.get(current_dir_metadata.get_key()).unwrap()
+        };
+    }
+
+    current_dir_listing
+}
+
 fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
     let mut cont : Vec<u8> = Vec::with_capacity(1024 * 1024);
     match File::open(&local_path) {
