@@ -14,6 +14,18 @@ fn login() -> Client {
     let mut pin = String::new();
     let mut password = String::new();
 
+    // TEST_SAFENETWORK_LOGIN_PATH file format
+    // is three lines, keyword pin and pass.
+    //
+    // Example:
+    //
+    // -------
+    // test\n
+    // 1234\n
+    // test\n
+    // -------
+    // (no dashes)
+    //
     match env::var("TEST_SAFENETWORK_LOGIN_PATH") {
         Ok(val) => {
             let f = match File::open(val) {
