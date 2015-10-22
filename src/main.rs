@@ -17,15 +17,15 @@ fn login() -> Client {
             let f = match File::open(val) {
                 Ok(file) => {
                     let reader = BufReader::new(file);
-                    let lines : Vec<_> = reader.lines().collect();
+                    let lines : Vec<_> = reader.lines().map(|x| x.unwrap()).collect();
 
                     if lines.len() != 3 {
                         panic!("Wrong amount of lines! Expected keyword, pin, password (3)");
                     }
 
-                    keyword = lines[0];
-                    pin = lines[1];
-                    password = lines[2];
+                    keyword = lines[0].clone();
+                    pin = lines[1].clone();
+                    password = lines[2].clone();
                 },
                 Err(err) => {
                     panic!("Could not open file");
