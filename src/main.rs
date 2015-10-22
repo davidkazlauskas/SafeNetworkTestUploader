@@ -8,9 +8,9 @@ use std::fs::File;
 use safe_core::client::Client;
 
 fn login() -> Client {
-    let mut keyword : String = "";
-    let mut pin : String = "";
-    let mut password : String = "";
+    let mut keyword = String::new();
+    let mut pin = String::new();
+    let mut password = String::new();
 
     match env::var("TEST_SAFENETWORK_LOGIN_PATH") {
         Ok(val) => {
