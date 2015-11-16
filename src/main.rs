@@ -99,9 +99,9 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
     current_dir_listing
 }
 
-pub fn get_directory_key(tokens : &Vec<String>) -> String {
+pub fn get_directory_key(tokens: &Vec<String>) -> String {
     let tokensize = token.size() - 1;
-    let mut res = String::new()
+    let mut res = String::new();
     for it in tokens.iter().take(tokensize) {
         res += it;
         res += "/";
