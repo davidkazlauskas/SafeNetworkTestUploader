@@ -51,7 +51,7 @@ fn login() -> Client {
         }
     }
 
-    let res = Client::create_account(keyword.clone(),pin.clone(),password.clone());
+    let res = Client::log_in(keyword.clone(),pin.clone(),password.clone());
     match res {
         Ok(login) => return login,
         Err(err) => {
@@ -132,7 +132,10 @@ fn main() {
 
     let command = the_args[1].clone();
     if command == "upl" {
+        println!("Uploading...");
         assert!( the_args.len() == 4, "Upload routine expects three arguments." );
         upload_routine(login_arc.clone(),the_args[2].clone(),the_args[3].clone());
+        println!("Done!");
+        return;
     }
 }
