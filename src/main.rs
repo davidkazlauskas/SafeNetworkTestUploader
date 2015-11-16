@@ -80,7 +80,7 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
             topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
             Vec::new(),
             true,
-            ::AccessLevel::Public,
+            ::safe_nfs::AccessLevel::Public,
             None);
 
     let mut current_dir_listing = match starting_directory {
@@ -95,7 +95,7 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
                 Ok(dir) => dir,
                 Err(err) => panic!("Could not receive root directory."),
             }
-        }
+        },
     };
 
     for it in tokens.iter() {
