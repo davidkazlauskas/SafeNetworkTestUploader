@@ -121,6 +121,9 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
     use safe_nfs::helper::reader::Reader;
 
+    // try opening locally right away,
+    // don't open net connections if we
+    // can't open local file.
     let mut localwriter = match File::open(&local_path) {
         Ok(writer) => BufWriter::new(writer),
         Err(err) => panic!("Could not open local file for writing."),
