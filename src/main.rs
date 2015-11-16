@@ -121,6 +121,11 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
     use safe_nfs::helper::reader::Reader;
 
+    let mut localwriter = match File::open(&local_path) {
+        Ok(writer) => BufWriter::new(writer),
+        Err(err) => panic!("Could not open local file for writing."),
+    };
+
     let tokenized = path_tokeniser(remote_path.clone());
 
     let last_path = match tokenized.last() {
@@ -136,6 +141,10 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
             let mut reader = file_helper.read(reader_met);
             let size = reader.size();
             let result = reader.read(0,size);
+            match result {
+                Ok(thevec) => localwriter.write(&thevec),
+                Err(err) => panic!("Could not read remote file."),
+            };
         },
         None => {
             panic!("File does not exist.");
