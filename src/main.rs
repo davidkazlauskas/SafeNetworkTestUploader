@@ -74,17 +74,23 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 
     let topdir = get_directory_key(tokens);
+    println!("SUBDIR|{}|",topdir);
 
     let mut dir =
-        dir_helper.create(
-            topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
-            Vec::new(),
-            true,
-            ::safe_nfs::AccessLevel::Public,
-            None);
+        if topdir != "" {
+            let (res,_) =
+                dir_helper.create(
+                    topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
+                    Vec::new(),
+                    true,
+                    ::safe_nfs::AccessLevel::Public,
+                    None).unwrap();
+            res
+        } else {
+            dir_helper.get_user_root_directory_listing().unwrap()
+        };
 
-    let (res,_) = dir.unwrap();
-    res
+    dir
 
     //let mut current_dir_listing = match starting_directory {
         //Some(directory_key) => {
@@ -155,6 +161,8 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
         Some(path) => path.clone(),
         None => panic!("Could not parse filename."),
     };
+
+    println!("|{}|",last_path);
 
     let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
