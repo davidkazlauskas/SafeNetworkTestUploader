@@ -149,5 +149,8 @@ fn main() {
         upload_routine(login_arc.clone(),the_args[2].clone(),the_args[3].clone());
         println!("Done!");
         return;
+    } else if command == "dl" {
+        println!("Downloading...");
+        println!("Done!");
     }
 }
