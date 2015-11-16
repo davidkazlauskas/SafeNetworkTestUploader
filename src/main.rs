@@ -83,33 +83,36 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
             ::safe_nfs::AccessLevel::Public,
             None);
 
-    let mut current_dir_listing = match starting_directory {
-        Some(directory_key) => {
-            match dir_helper.get(directory_key) {
-                Ok(dir) => dir,
-                Err(err) => panic!("Could not extract directory."),
-            }
-        },
-        None => {
-            match dir_helper.get_user_root_directory_listing() {
-                Ok(dir) => dir,
-                Err(err) => panic!("Could not receive root directory."),
-            }
-        },
-    };
+    let (res,_) = dir.unwrap();
+    res
 
-    for it in tokens.iter() {
-        current_dir_listing = {
-            let current_dir_metadata = current_dir_listing
-                .get_sub_directories()
-                .iter()
-                .find(|a| *a.get_name() == *it)
-                .unwrap();
-            dir_helper.get(current_dir_metadata.get_key()).unwrap()
-        };
-    }
+    //let mut current_dir_listing = match starting_directory {
+        //Some(directory_key) => {
+            //match dir_helper.get(directory_key) {
+                //Ok(dir) => dir,
+                //Err(err) => panic!("Could not extract directory."),
+            //}
+        //},
+        //None => {
+            //match dir_helper.get_user_root_directory_listing() {
+                //Ok(dir) => dir,
+                //Err(err) => panic!("Could not receive root directory."),
+            //}
+        //},
+    //};
 
-    current_dir_listing
+    //for it in tokens.iter() {
+        //current_dir_listing = {
+            //let current_dir_metadata = current_dir_listing
+                //.get_sub_directories()
+                //.iter()
+                //.find(|a| *a.get_name() == *it)
+                //.unwrap();
+            //dir_helper.get(current_dir_metadata.get_key()).unwrap()
+        //};
+    //}
+
+    //current_dir_listing
 }
 
 pub fn get_directory_key(tokens: &Vec<String>) -> String {
