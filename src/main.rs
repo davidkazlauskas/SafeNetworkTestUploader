@@ -118,6 +118,35 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
     }
 }
 
+fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
+    use safe_nfs::helper::reader::Reader;
+
+    let tokenized = path_tokeniser(remote_path.clone());
+
+    let last_path = match tokenized.last() {
+        Some(&path) => path.clone(),
+        None => panic!("Could not parse filename."),
+    };
+
+    let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
+    let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
+
+    match final_subdir.find_file(&last_path) {
+        Some(reader_met) => {
+            let reader = file_helper.read(reader_met);
+            let size = reader.size();
+            let result = reader.read(0,size);
+        },
+        None => {
+            panic!("File does not exist.");
+        }
+    }
+        //Ok(mut reader) => {
+        //},
+        //Err(err) => panic!("Could not open remote file."),
+    //}
+}
+
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
     let dir_helper = safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 }
