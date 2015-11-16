@@ -193,6 +193,7 @@ fn main() {
     } else if command == "dl" {
         println!("Downloading...");
         assert!( the_args.len() == 4, "Download routine expects three arguments." );
+        download_routine(login_arc.clone(),the_args[2].clone(),the_args[3].clone());
         println!("Done!");
     }
 }
