@@ -100,8 +100,11 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
 
     for it in tokens.iter() {
         current_dir_listing = {
-            let current_dir_metadata = current_dir_listing.get_sub_directories().iter().find(|a| *a.get_name() == *it)
-                                                                                            .unwrap();
+            let current_dir_metadata = current_dir_listing
+                .get_sub_directories()
+                .iter()
+                .find(|a| *a.get_name() == *it)
+                .unwrap();
             dir_helper.get(current_dir_metadata.get_key()).unwrap()
         };
     }
