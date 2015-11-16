@@ -75,7 +75,7 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
 
     let topdir = get_directory_key(tokens);
 
-    let (mut dir,_) =
+    let mut dir =
         dir_helper.create(
             topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
             Vec::new(),
@@ -113,7 +113,7 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
 }
 
 pub fn get_directory_key(tokens: &Vec<String>) -> String {
-    let tokensize = tokens.size() - 1;
+    let tokensize = tokens.len() - 1;
     let mut res = String::new();
     for it in tokens.iter().take(tokensize) {
         res += it;
