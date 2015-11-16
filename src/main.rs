@@ -74,8 +74,18 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 
     let mut current_dir_listing = match starting_directory {
-        Some(directory_key) => dir_helper.get(directory_key).unwrap(),
-        None => dir_helper.get_user_root_directory_listing().unwrap(),
+        Some(directory_key) => {
+            match dir_helper.get(directory_key) {
+                Ok(dir) => dir,
+                Err(err) => panic!("Could not extract directory."),
+            }
+        },
+        None => {
+            match dir_helper.get_user_root_directory_listing() {
+                Ok(dir) => dir,
+                Err(err) => panic!("Could not receive root directory."),
+            }
+        }
     };
 
     for it in tokens.iter() {
