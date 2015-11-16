@@ -51,7 +51,7 @@ fn login() -> Client {
         }
     }
 
-    let res = Client::log_in(keyword.clone(),pin.clone(),password.clone());
+    let res = Client::create_account(keyword.clone(),pin.clone(),password.clone());
     match res {
         Ok(login) => return login,
         Err(err) => {
