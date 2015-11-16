@@ -116,8 +116,8 @@ pub fn get_directory_key(tokens: &Vec<String>) -> String {
     let tokensize = tokens.len() - 1;
     let mut res = String::new();
     for it in tokens.iter().take(tokensize) {
-        res += it;
-        res += "/";
+        res.push_str(&it);
+        res.push_str("/");
     }
     res.pop();
 
