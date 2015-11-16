@@ -102,8 +102,10 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
     let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
 
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
-    let mut writer = file_helper.create(remote_path,Vec::new(),final_subdir).unwrap();
-    writer.write(&cont,0);
+    match file_helper.create(remote_path,Vec::new(),final_subdir) {
+        Ok(mut writer) => writer.write(&cont,0),
+        Err(err) => panic!("Cannot open remote file for writing."),
+    }
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
