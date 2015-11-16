@@ -124,7 +124,7 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
     let tokenized = path_tokeniser(remote_path.clone());
 
     let last_path = match tokenized.last() {
-        Some(&path) => path.clone(),
+        Some(path) => path.clone(),
         None => panic!("Could not parse filename."),
     };
 
@@ -133,7 +133,7 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
 
     match final_subdir.find_file(&last_path) {
         Some(reader_met) => {
-            let reader = file_helper.read(reader_met);
+            let mut reader = file_helper.read(reader_met);
             let size = reader.size();
             let result = reader.read(0,size);
         },
