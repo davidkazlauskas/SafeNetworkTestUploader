@@ -87,6 +87,7 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
                     None).unwrap();
             res
         } else {
+            println!("Root returned");
             dir_helper.get_user_root_directory_listing().unwrap()
         };
 
@@ -144,9 +145,12 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
 
     let tokenized = path_tokeniser(remote_path.clone());
     let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
+    let tailfilename = tokenized.last().unwrap().clone();
+
+    println!("TAIL|{}|",tailfilename);
 
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
-    match file_helper.create(remote_path,Vec::new(),final_subdir) {
+    match file_helper.create(tailfilename,Vec::new(),final_subdir) {
         Ok(mut writer) => writer.write(&cont,0),
         Err(err) => panic!("Cannot open remote file for writing."),
     }
