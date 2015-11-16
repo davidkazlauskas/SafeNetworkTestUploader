@@ -151,6 +151,7 @@ fn main() {
         return;
     } else if command == "dl" {
         println!("Downloading...");
+        assert!( the_args.len() == 4, "Download routine expects three arguments." );
         println!("Done!");
     }
 }
