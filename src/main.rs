@@ -73,6 +73,16 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
 {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 
+    let topdir = get_directory_key(tokens);
+
+    let (mut dir,_) =
+        dir_helper.create(
+            topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
+            Vec::new(),
+            true,
+            ::AccessLevel::Public,
+            None);
+
     let mut current_dir_listing = match starting_directory {
         Some(directory_key) => {
             match dir_helper.get(directory_key) {
