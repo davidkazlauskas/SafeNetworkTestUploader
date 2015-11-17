@@ -197,6 +197,10 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
     //}
 }
 
+fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
+
+}
+
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
     let dir_helper = safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 }
@@ -237,6 +241,7 @@ fn main() {
     } else if command == "test" {
         println!("Testing...");
         assert!( the_args.len() == 2, "Download routine expects three arguments." );
+        test_routine(login_arc.clone());
         println!("Done!");
     }
 }
