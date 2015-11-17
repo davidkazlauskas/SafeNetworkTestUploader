@@ -198,14 +198,14 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
 }
 
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
-    let dir_helper = ::helper::directory_helper::DirectoryHelper::new(client.clone());
+    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
     let (mut directory, _) = dir_helper.create("DirName".to_string(),
                                                             ::VERSIONED_DIRECTORY_LISTING_TAG,
                                                             Vec::new(),
                                                             true,
                                                             ::AccessLevel::Private,
                                                             None).unwrap();
-    let file_helper = ::helper::file_helper::FileHelper::new(client.clone());
+    let file_helper = ::safe_nfs::helper::file_helper::FileHelper::new(client.clone());
     let file_name = "hello.txt".to_string();
     { // create
         let mut writer = file_helper.create(file_name.clone(), Vec::new(), directory).unwrap();
@@ -223,7 +223,7 @@ fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
     {// update - full rewrite
         let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
         let mut writer = file_helper.update_content(
-            file, ::helper::writer::Mode::Overwrite, directory).unwrap();
+            file, ::safe_nfs::helper::writer::Mode::Overwrite, directory).unwrap();
         writer.write(&vec![1u8; 50], 0);
         let (updated_directory, _) = writer.close().unwrap();
         directory = updated_directory;
@@ -235,7 +235,7 @@ fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
     {// update - partial rewrite
         let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
         let mut writer = file_helper.update_content(
-            file, ::helper::writer::Mode::Modify, directory).unwrap();
+            file, ::safe_nfs::helper::writer::Mode::Modify, directory).unwrap();
         writer.write(&vec![2u8; 10], 0);
         let (updated_directory, _) = writer.close().unwrap();
         directory = updated_directory;
