@@ -205,6 +205,7 @@ fn print_usage() {
     println!("Usage (upload): uploadutil upl <local file> <remote folder>");
     println!("Usage (download): uploadutil dl <remote file> <local path>");
     println!("Usage (mkdir): uploadutil mkdir <remote path>");
+    println!("Usage (test): uploadutil test");
 }
 
 fn main() {
@@ -232,6 +233,10 @@ fn main() {
         println!("Downloading...");
         assert!( the_args.len() == 4, "Download routine expects three arguments." );
         download_routine(login_arc.clone(),the_args[3].clone(),the_args[2].clone());
+        println!("Done!");
+    } else if command == "test" {
+        println!("Testing...");
+        assert!( the_args.len() == 2, "Download routine expects three arguments." );
         println!("Done!");
     }
 }
