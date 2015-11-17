@@ -278,7 +278,9 @@ fn print_usage() {
 fn main() {
     let the_args : Vec<_> = env::args().collect();
 
-    if the_args.len() != 3 && the_args.len() != 4 {
+    if     the_args.len() != 2
+        && the_args.len() != 3
+        && the_args.len() != 4 {
         print_usage();
         return;
     }
