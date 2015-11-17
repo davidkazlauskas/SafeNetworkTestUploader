@@ -197,6 +197,7 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
     //}
 }
 
+// copied and refactored from official
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
     let (mut directory, _) = dir_helper.create("DirName".to_string(),
