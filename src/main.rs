@@ -198,7 +198,70 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
 }
 
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
-
+    let dir_helper = ::helper::directory_helper::DirectoryHelper::new(client.clone());
+    let (mut directory, _) = dir_helper.create("DirName".to_string(),
+                                                            ::VERSIONED_DIRECTORY_LISTING_TAG,
+                                                            Vec::new(),
+                                                            true,
+                                                            ::AccessLevel::Private,
+                                                            None).unwrap();
+    let file_helper = ::helper::file_helper::FileHelper::new(client.clone());
+    let file_name = "hello.txt".to_string();
+    { // create
+        let mut writer = file_helper.create(file_name.clone(), Vec::new(), directory).unwrap();
+        writer.write(&vec![0u8; 100], 0);
+        let (updated_directory, _) = writer.close().unwrap();
+        directory = updated_directory;
+        assert!(directory.find_file(&file_name).is_some());
+    }
+    {// read
+        let file = directory.find_file(&file_name).unwrap();
+        let mut reader = file_helper.read(file);
+        let size = reader.size();
+        assert_eq!(reader.read(0, size).unwrap(), vec![0u8; 100]);
+    }
+    {// update - full rewrite
+        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
+        let mut writer = file_helper.update_content(
+            file, ::helper::writer::Mode::Overwrite, directory).unwrap();
+        writer.write(&vec![1u8; 50], 0);
+        let (updated_directory, _) = writer.close().unwrap();
+        directory = updated_directory;
+        let file = directory.find_file(&file_name).unwrap();
+        let mut reader = file_helper.read(file);
+        let size = reader.size();
+        assert_eq!(reader.read(0, size).unwrap(), vec![1u8; 50]);
+    }
+    {// update - partial rewrite
+        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
+        let mut writer = file_helper.update_content(
+            file, ::helper::writer::Mode::Modify, directory).unwrap();
+        writer.write(&vec![2u8; 10], 0);
+        let (updated_directory, _) = writer.close().unwrap();
+        directory = updated_directory;
+        let file = directory.find_file(&file_name).unwrap();
+        let mut reader = file_helper.read(file);
+        let size = reader.size();
+        let data = reader.read(0, size).unwrap();
+        assert_eq!(&data[0..10], [2u8; 10]);
+        assert_eq!(&data[10..20], [1u8; 10]);
+    }
+    {// versions
+        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
+        let versions = file_helper.get_versions(&file, &directory).unwrap();
+        assert_eq!(versions.len(), 3);
+    }
+    {// Update Metadata
+        let mut file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
+        file.get_mut_metadata().set_user_metadata(vec![12u8; 10]);
+        let _ = file_helper.update_metadata(file, &mut directory).unwrap();
+        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
+        assert_eq!(*file.get_metadata().get_user_metadata(), vec![12u8; 10]);
+    }
+    {// Delete
+        let _ = file_helper.delete(file_name.clone(), &mut directory).unwrap();
+        assert!(directory.find_file(&file_name).is_none());
+    }
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
