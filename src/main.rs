@@ -219,7 +219,8 @@ fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
         let file = directory.find_file(&file_name).unwrap();
         let mut reader = file_helper.read(file);
         let size = reader.size();
-        assert_eq!(reader.read(0, size).unwrap(), vec![0u8; 100]);
+        let readvec = reader.read(0,size).unwrap();
+        assert_eq!(readvec, vec![0u8; 100]);
     }
     {// update - full rewrite
         let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
