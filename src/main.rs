@@ -152,7 +152,10 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
 
     let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
     match file_helper.create(tailfilename,Vec::new(),final_subdir) {
-        Ok(mut writer) => writer.write(&cont,0),
+        Ok(mut writer) =>  {
+            writer.write(&cont,0);
+            writer.close();
+        },
         Err(err) => panic!("Cannot open remote file for writing."),
     }
 }
