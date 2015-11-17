@@ -72,26 +72,27 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
                               starting_directory: Option<&::safe_nfs::metadata::directory_key::DirectoryKey>) -> ::safe_nfs::directory_listing::DirectoryListing
 {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
+    dir_helper.get_user_root_directory_listing().unwrap()
 
-    let topdir = get_directory_key(tokens);
-    println!("SUBDIR|{}|",topdir);
+    //let topdir = get_directory_key(tokens);
+    //println!("SUBDIR|{}|",topdir);
 
-    let mut dir =
-        if topdir != "" {
-            let (res,_) =
-                dir_helper.create(
-                    topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
-                    Vec::new(),
-                    true,
-                    ::safe_nfs::AccessLevel::Public,
-                    None).unwrap();
-            res
-        } else {
-            println!("Root returned");
-            dir_helper.get_user_root_directory_listing().unwrap()
-        };
+    //let mut dir =
+        //if topdir != "" {
+            //let (res,_) =
+                //dir_helper.create(
+                    //topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
+                    //Vec::new(),
+                    //true,
+                    //::safe_nfs::AccessLevel::Public,
+                    //None).unwrap();
+            //res
+        //} else {
+            //println!("Root returned");
+            //dir_helper.get_user_root_directory_listing().unwrap()
+        //};
 
-    dir
+    //dir
 
     //let mut current_dir_listing = match starting_directory {
         //Some(directory_key) => {
