@@ -200,10 +200,10 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
     let (mut directory, _) = dir_helper.create("DirName".to_string(),
-                                                            ::VERSIONED_DIRECTORY_LISTING_TAG,
+                                                            ::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
                                                             Vec::new(),
                                                             true,
-                                                            ::AccessLevel::Private,
+                                                            ::safe_nfs::AccessLevel::Private,
                                                             None).unwrap();
     let file_helper = ::safe_nfs::helper::file_helper::FileHelper::new(client.clone());
     let file_name = "hello.txt".to_string();
