@@ -71,6 +71,38 @@ fn login_anon() -> Client {
     Client::create_unregistered_client().unwrap()
 }
 
+fn recursive_find_path(
+    tokens: &Vec< String >,num: usize,
+    root: ::safe_nfs::directory_listing::DirectoryListing,
+    dir_helper: ::safe_nfs::helper::directory_helper::DirectoryHelper)
+    -> ::safe_nfs::directory_listing::DirectoryListing
+{
+    if num < tokens.len() - 1 {
+        let current = tokens[num].clone();
+
+        let found = root.find_sub_directory(&current);
+        match found {
+            Some(val) => {
+                let thekey = val.get_key();
+                let next = dir_helper.get(thekey);
+                match next {
+                    Ok(val) => {
+                        recursive_find_path(tokens,num + 1,val,dir_helper)
+                    },
+                    Err(err) => {
+                        panic!("Could not retrieve by id: {:?}",err);
+                    },
+                }
+            },
+            None => {
+                panic!("Folder path {} doesn't exist.",current);
+            },
+        }
+    } else {
+        root
+    }
+}
+
 // copy/paste
 pub fn path_tokeniser(the_path: String) -> Vec<String> {
     the_path.split("/").filter(|a| !a.is_empty()).map(|a| a.to_string()).collect()
@@ -235,38 +267,49 @@ fn download_routine_pub_dns(
                 let dir_helper = ::safe_nfs::helper::directory_helper
                     ::DirectoryHelper::new(client.clone());
                 let listing = dir_helper.get(&val);
-                let mut outlisting;
-                match listing {
-                    Ok(lst) => {
-                        if tokenizedpath.len() > 1 {
-                            for i in tokenizedpath.iter()
-                                .take(tokenizedpath.len() - 1)
-                            {
-                                match lst.find_sub_directory(&i) {
-                                    Some(val) => {
-                                        let curr = dir_helper.get(val.get_key());
-                                        match curr {
-                                            Ok(lst) => {
-                                                outlisting = lst;
-                                            },
-                                            Err(err) => {
-                                                panic!("Totally didn't expect this.");
-                                            },
-                                        }
-                                    },
-                                    None => {
-                                        panic!("Folder path {} doesn't exist.",i)
-                                    },
-                                }
-                            }
-                        } else {
-                            outlisting = lst;
-                        }
-                    },
-                    Err(err) => {
-                        panic!("Cannot find directory: {:?}",err);
-                    },
-                }
+                //let reslisting = 
+                    //match listing {
+                        //Ok(lst) => {
+                            //let mut outlisting = lst;
+                            //if tokenizedpath.len() > 1 {
+                                //for i in tokenizedpath.iter()
+                                    //.take(tokenizedpath.len() - 1)
+                                //{
+                                    //let mut currkey;
+
+                                    //{
+                                        //let findres = outlisting.find_sub_directory(&i);
+                                        //match findres {
+                                            //Some(val) => {
+                                                //currkey = val.get_key();
+                                            //},
+                                            //None => {
+                                                //panic!("Folder path {} doesn't exist.",i)
+                                            //},
+                                        //};
+                                    //}
+
+                                    //let curr = dir_helper.get(currkey);
+                                    //match curr {
+                                        //Ok(lst) => {
+                                            //outlisting = lst
+                                        //},
+                                        //Err(err) => {
+                                            //panic!("Totally didn't expect this.");
+                                        //},
+                                    //};
+                                //}
+                                //outlisting
+                            //} else {
+                                //outlisting
+                            //}
+                        //},
+                        //Err(err) => {
+                            //panic!("Cannot find directory: {:?}",err);
+                        //},
+                    //};
+
+                //let thefile = reslisting.find_file(tokenizedpath.last().unwrap());
             },
             Err(err) => {
                 panic!("Error, cannot open resource: {:?}",err);
