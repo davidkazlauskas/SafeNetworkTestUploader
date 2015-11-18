@@ -234,14 +234,27 @@ fn download_routine_pub_dns(
             Ok(val) => {
                 let dir_helper = ::safe_nfs::helper::directory_helper
                     ::DirectoryHelper::new(client.clone());
-                let mut listing = dir_helper.get(&val);
+                let listing = dir_helper.get(&val);
+                match listing {
+                    Ok(lst) => {
+                        if tokenizedpath.len() > 1 {
+                            for i in tokenizedpath.iter()
+                                .take(tokenizedpath.len() - 1)
+                            {
+                                match lst.find_sub_directory(&i) {
+                                    Some(val) => {
 
-                if tokenizedpath.len() > 1 {
-                    for i in tokenizedpath.iter()
-                        .take(tokenizedpath.len() - 1)
-                    {
-
-                    }
+                                    },
+                                    None => {
+                                        panic!("Folder path {} doesn't exist.",i)
+                                    },
+                                }
+                            }
+                        }
+                    },
+                    Err(err) => {
+                        panic!("Cannot find directory: {:?}",err);
+                    },
                 }
             },
             Err(err) => {
