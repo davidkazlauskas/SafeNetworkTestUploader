@@ -276,7 +276,19 @@ fn download_routine_pub_dns(
                             tokenizedpath.last().unwrap());
                         match thefile {
                             Some(file) => {
+                                let file_helper = ::safe_nfs::helper::file_helper
+                                    ::FileHelper::new(client.clone());
+                                let reader = file_helper.read(file);
+                                let size = reader.size();
+                                let content = reader.read(0,size);
+                                match content {
+                                    Ok(bytes) => {
 
+                                    },
+                                    Err(err) => {
+                                        panic!("Could not read file.");
+                                    },
+                                }
                             },
                             None => {
                                 panic!("No such file in such directory.");
