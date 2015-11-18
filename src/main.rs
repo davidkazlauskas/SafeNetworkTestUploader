@@ -267,47 +267,16 @@ fn download_routine_pub_dns(
                 let dir_helper = ::safe_nfs::helper::directory_helper
                     ::DirectoryHelper::new(client.clone());
                 let listing = dir_helper.get(&val);
-                //let reslisting = 
-                    //match listing {
-                        //Ok(lst) => {
-                            //let mut outlisting = lst;
-                            //if tokenizedpath.len() > 1 {
-                                //for i in tokenizedpath.iter()
-                                    //.take(tokenizedpath.len() - 1)
-                                //{
-                                    //let mut currkey;
 
-                                    //{
-                                        //let findres = outlisting.find_sub_directory(&i);
-                                        //match findres {
-                                            //Some(val) => {
-                                                //currkey = val.get_key();
-                                            //},
-                                            //None => {
-                                                //panic!("Folder path {} doesn't exist.",i)
-                                            //},
-                                        //};
-                                    //}
-
-                                    //let curr = dir_helper.get(currkey);
-                                    //match curr {
-                                        //Ok(lst) => {
-                                            //outlisting = lst
-                                        //},
-                                        //Err(err) => {
-                                            //panic!("Totally didn't expect this.");
-                                        //},
-                                    //};
-                                //}
-                                //outlisting
-                            //} else {
-                                //outlisting
-                            //}
-                        //},
-                        //Err(err) => {
-                            //panic!("Cannot find directory: {:?}",err);
-                        //},
-                    //};
+                match listing {
+                    Ok(lst) => {
+                        let reslisting = recursive_find_path(
+                            &tokenizedpath,0,lst,dir_helper);
+                    },
+                    Err(err) => {
+                        panic!("Listing not found: {:?}",err);
+                    },
+                };
 
                 //let thefile = reslisting.find_file(tokenizedpath.last().unwrap());
             },
