@@ -283,7 +283,12 @@ fn download_routine_pub_dns(
                                 let content = reader.read(0,size);
                                 match content {
                                     Ok(bytes) => {
+                                        let mut localwriter = match File::create(&local_path) {
+                                            Ok(writer) => BufWriter::new(writer),
+                                            Err(err) => panic!("Could not open local file for writing."),
+                                        };
 
+                                        localwriter.write(&bytes);
                                     },
                                     Err(err) => {
                                         panic!("Could not read file.");
