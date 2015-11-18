@@ -231,6 +231,8 @@ fn download_routine_pub_dns(
 
         match dir_key {
             Ok(val) => {
+                let dir_helper = ::safe_nfs::helper::directory_helper
+                    ::DirectoryHelper::new(client.clone());
             },
             Err(err) => {
                 panic!("Error, cannot open resource: {:?}",err);
