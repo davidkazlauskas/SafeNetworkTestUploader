@@ -63,7 +63,7 @@ fn login() -> Client {
 }
 
 fn login_anon() -> Client {
-    Client::create_unregistered_client()
+    Client::create_unregistered_client().unwrap()
 }
 
 // copy/paste
