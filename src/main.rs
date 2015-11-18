@@ -227,7 +227,15 @@ fn download_routine_pub_dns(
             client.clone()).unwrap();
         let dir_key = operations
             .get_service_home_directory_key(
-                &name,&service,None).unwrap();
+                &name,&service,None);
+
+        match dir_key {
+            Ok(val) => {
+            },
+            Err(err) => {
+                println!("Error, cannot open resource: {:?}",err);
+            },
+        };
 
         println!("Ze stuff:|{}|{}|{}|",service,name,file);
         return;
