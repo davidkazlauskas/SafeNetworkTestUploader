@@ -201,6 +201,10 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
     //}
 }
 
+fn download_routine_pub_dns(client: std::sync::Arc< std::sync::Mutex< Client > >) {
+
+}
+
 // copied and refactored from official
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
@@ -291,14 +295,13 @@ fn main() {
         return;
     }
 
-    println!("Logging in...");
-    let login = login();
-    println!("Logged in");
-
-    let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
-
     let command = the_args[1].clone();
     if command == "upl" {
+        println!("Logging in...");
+        let login = login();
+        println!("Logged in");
+        let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
+
         println!("Uploading...");
         assert!( the_args.len() == 4, "Upload routine expects three arguments." );
         upload_routine(login_arc.clone(),the_args[2].clone(),the_args[3].clone());
@@ -310,6 +313,11 @@ fn main() {
         download_routine(login_arc.clone(),the_args[3].clone(),the_args[2].clone());
         println!("Done!");
     } else if command == "test" {
+        println!("Logging in...");
+        let login = login();
+        println!("Logged in");
+        let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
+
         println!("Testing...");
         assert!( the_args.len() == 2, "Download routine expects three arguments." );
         test_routine(login_arc.clone());
