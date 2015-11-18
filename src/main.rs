@@ -215,7 +215,17 @@ fn download_routine_pub_dns(
     remote_path: String)
 {
     let trimmed = remote_path.trim();
-    let namergx = regex!(r"([a-zA-Z0-9_-]+).([a-zA-Z0-9_.-]+)/([a-zA-Z0-9_./]+)");
+    let namergx = regex!(r"^([a-zA-Z0-9_-]+).([a-zA-Z0-9_.-]+)/([a-zA-Z0-9_./]+)$");
+
+    for i in namergx.captures_iter(trimmed) {
+        let service = i.at(1).unwrap();
+        let name = i.at(2).unwrap();
+        let file = i.at(3).unwrap();
+        println!("Ze stuff:|{}|{}|{}|",service,name,file);
+        return;
+    }
+
+    panic!("Should never be reached!");
 }
 
 // copied and refactored from official
