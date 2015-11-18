@@ -228,6 +228,7 @@ fn download_routine_pub_dns(
         let dir_key = operations
             .get_service_home_directory_key(
                 &name,&service,None);
+        let tokenizedpath = path_tokeniser(file.clone());
 
         match dir_key {
             Ok(val) => {
