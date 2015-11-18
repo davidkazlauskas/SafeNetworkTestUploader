@@ -219,11 +219,15 @@ fn download_routine_pub_dns(
     let namergx = regex!(r"^([a-zA-Z0-9_-]+).([a-zA-Z0-9_.-]+)/([a-zA-Z0-9_./]+)$");
 
     for i in namergx.captures_iter(trimmed) {
-        let service = i.at(1).unwrap();
-        let name = i.at(2).unwrap();
-        let file = i.at(3).unwrap();
+        let service = i.at(1).unwrap().to_string();
+        let name = i.at(2).unwrap().to_string();
+        let file = i.at(3).unwrap().to_string();
 
-        let operations = ::safe_dns::dns_operations::DnsOperations::new(client.clone());
+        let operations = ::safe_dns::dns_operations::DnsOperations::new(
+            client.clone()).unwrap();
+        let dir_key = operations
+            .get_service_home_directory_key(
+                &name,&service,None).unwrap();
 
         println!("Ze stuff:|{}|{}|{}|",service,name,file);
         return;
