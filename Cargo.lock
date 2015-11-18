@@ -5,6 +5,7 @@ dependencies = [
  "regex 0.1.41 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex_macros 0.1.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "safe_core 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "safe_dns 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "safe_nfs 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -387,6 +388,19 @@ dependencies = [
  "routing 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.16 (registry+https://github.com/rust-lang/crates.io-index)",
  "self_encryption 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sodiumoxide 0.0.9 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "safe_dns"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "log 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "routing 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rustc-serialize 0.3.16 (registry+https://github.com/rust-lang/crates.io-index)",
+ "safe_core 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "safe_nfs 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "sodiumoxide 0.0.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

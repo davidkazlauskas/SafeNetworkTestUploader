@@ -3,6 +3,7 @@
 
 extern crate safe_core;
 extern crate safe_nfs;
+extern crate safe_dns;
 extern crate regex;
 
 use std::env;
@@ -221,6 +222,9 @@ fn download_routine_pub_dns(
         let service = i.at(1).unwrap();
         let name = i.at(2).unwrap();
         let file = i.at(3).unwrap();
+
+        let operations = ::safe_dns::dns_operations::DnsOperations::new(client.clone());
+
         println!("Ze stuff:|{}|{}|{}|",service,name,file);
         return;
     }
