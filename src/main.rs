@@ -205,7 +205,11 @@ fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_p
     //}
 }
 
-fn download_routine_pub_dns(client: std::sync::Arc< std::sync::Mutex< Client > >) {
+fn download_routine_pub_dns(
+    client: std::sync::Arc< std::sync::Mutex< Client > >,
+    local_path: String,
+    remote_path: String)
+{
 
 }
 
@@ -318,7 +322,7 @@ fn main() {
         let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
         println!("Downloading...");
         assert!( the_args.len() == 4, "Download routine expects three arguments." );
-        download_routine(login_arc.clone(),the_args[3].clone(),the_args[2].clone());
+        download_routine_pub_dns(login_arc.clone(),the_args[3].clone(),the_args[2].clone());
         println!("Done!");
     } else if command == "test" {
         println!("Logging in...");
