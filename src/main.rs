@@ -62,6 +62,10 @@ fn login() -> Client {
     }
 }
 
+fn login_anon() -> Client {
+    Client::create_unregistered_client()
+}
+
 // copy/paste
 pub fn path_tokeniser(the_path: String) -> Vec<String> {
     the_path.split("/").filter(|a| !a.is_empty()).map(|a| a.to_string()).collect()
@@ -308,6 +312,10 @@ fn main() {
         println!("Done!");
         return;
     } else if command == "dl" {
+        println!("Logging in (anonymous)...");
+        let login = login_anon();
+        println!("Logged in");
+        let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
         println!("Downloading...");
         assert!( the_args.len() == 4, "Download routine expects three arguments." );
         download_routine(login_arc.clone(),the_args[3].clone(),the_args[2].clone());
