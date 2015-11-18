@@ -2,6 +2,8 @@
 name = "QuickUploader"
 version = "0.1.0"
 dependencies = [
+ "regex 0.1.41 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex_macros 0.1.23 (registry+https://github.com/rust-lang/crates.io-index)",
  "safe_core 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "safe_nfs 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -339,6 +341,14 @@ dependencies = [
 name = "regex-syntax"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "regex_macros"
+version = "0.1.23"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "regex 0.1.41 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "routing"

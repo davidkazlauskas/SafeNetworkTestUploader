@@ -1,5 +1,9 @@
+#![feature(plugin)]
+#![plugin(regex_macros)]
+
 extern crate safe_core;
 extern crate safe_nfs;
+extern crate regex;
 
 use std::env;
 use std::io;
@@ -210,7 +214,8 @@ fn download_routine_pub_dns(
     local_path: String,
     remote_path: String)
 {
-
+    let trimmed = remote_path.trim();
+    let namergx = regex!(r"([a-zA-Z0-9_-]).");
 }
 
 // copied and refactored from official
