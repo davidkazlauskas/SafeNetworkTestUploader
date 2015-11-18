@@ -233,7 +233,7 @@ fn download_routine_pub_dns(
             Ok(val) => {
             },
             Err(err) => {
-                println!("Error, cannot open resource: {:?}",err);
+                panic!("Error, cannot open resource: {:?}",err);
             },
         };
 
