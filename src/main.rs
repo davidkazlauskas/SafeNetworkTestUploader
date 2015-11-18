@@ -215,7 +215,7 @@ fn download_routine_pub_dns(
     remote_path: String)
 {
     let trimmed = remote_path.trim();
-    let namergx = regex!(r"([a-zA-Z0-9_-]).");
+    let namergx = regex!(r"([a-zA-Z0-9_-]+).([a-zA-Z0-9_.-]+)/");
 }
 
 // copied and refactored from official
