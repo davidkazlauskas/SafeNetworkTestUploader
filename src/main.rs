@@ -278,7 +278,7 @@ fn download_routine_pub_dns(
                             Some(file) => {
                                 let file_helper = ::safe_nfs::helper::file_helper
                                     ::FileHelper::new(client.clone());
-                                let reader = file_helper.read(file);
+                                let mut reader = file_helper.read(file);
                                 let size = reader.size();
                                 let content = reader.read(0,size);
                                 match content {
