@@ -272,13 +272,22 @@ fn download_routine_pub_dns(
                     Ok(lst) => {
                         let reslisting = recursive_find_path(
                             &tokenizedpath,0,lst,dir_helper);
+                        let thefile = reslisting.find_file(
+                            tokenizedpath.last().unwrap());
+                        match thefile {
+                            Some(file) => {
+
+                            },
+                            None => {
+                                panic!("No such file in such directory.");
+                            },
+                        }
                     },
                     Err(err) => {
                         panic!("Listing not found: {:?}",err);
                     },
                 };
 
-                //let thefile = reslisting.find_file(tokenizedpath.last().unwrap());
             },
             Err(err) => {
                 panic!("Error, cannot open resource: {:?}",err);
