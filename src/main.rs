@@ -421,6 +421,12 @@ fn main() {
         upload_routine(login_arc.clone(),the_args[2].clone(),the_args[3].clone());
         println!("Done!");
         return;
+    } else if command == "reg" {
+        println!("Logging in...");
+        let login = login();
+        println!("Logged in");
+        let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
+
     } else if command == "dl" {
         println!("Logging in (anonymous)...");
         let login = login_anon();
