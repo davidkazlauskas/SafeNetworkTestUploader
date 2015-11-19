@@ -285,13 +285,18 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
     let operations = ::safe_dns::dns_operations::DnsOperations::new(client.clone()).unwrap();
     let tr_domain = domain.trim().to_string();
 
+    let mut rootdir = match dir_helper.get_user_root_directory_listing() {
+        Ok(val) => val,
+        Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
+    };
+
     let service_home_dir = format!("www_{}_home_dir",domain);
     let the_dir = match dir_helper.create(service_home_dir,
                                           ::safe_nfs::UNVERSIONED_DIRECTORY_LISTING_TAG,
                                           vec![],
                                           false,
                                           ::safe_nfs::AccessLevel::Public,
-                                          None)
+                                          Some(&mut rootdir))
     {
         Ok((dir,_)) => dir,
         Err(err) => panic!("Cannot create directory: {:?}",err),
