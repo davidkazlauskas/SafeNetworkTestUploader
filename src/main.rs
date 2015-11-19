@@ -56,15 +56,7 @@ fn login() -> Client {
         }
     }
 
-    let res = Client::create_account(keyword.clone(),pin.clone(),password.clone());
-    match res {
-        Ok(login) => return login,
-        Err(err) => {
-            println!("Account doesn't exist, will be created...");
-            return Client::create_account(
-                keyword.clone(),pin.clone(),password.clone()).unwrap();
-        }
-    }
+    Client::create_account(keyword.clone(),pin.clone(),password.clone())
 }
 
 fn login_anon() -> Client {
