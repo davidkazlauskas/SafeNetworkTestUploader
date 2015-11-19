@@ -139,8 +139,14 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
         Err(err) => panic!("Cannot open local file."),
     };
 
+    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
+    let rootdir = match dir_helper.get_user_root_directory_listing() {
+        Ok(val) => val,
+        Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
+    };
+
     let tokenized = path_tokeniser(remote_path.clone());
-    let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
+    let final_subdir = recursive_find_path(&tokenized,0,rootdir,dir_helper);
     let tailfilename = tokenized.last().unwrap().clone();
 
     println!("TAIL|{}|",tailfilename);
