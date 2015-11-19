@@ -321,6 +321,7 @@ fn download_routine_pub_dns(
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
     let operations = ::safe_dns::dns_operations::DnsOperations::new(client.clone()).unwrap();
+    let tr_domain = domain.trim().to_string();
 
     let service_home_dir = format!("www_{}_home_dir",domain);
     let the_dir = dir_helper.create(service_home_dir,
