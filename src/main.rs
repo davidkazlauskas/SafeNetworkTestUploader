@@ -320,6 +320,8 @@ fn download_routine_pub_dns(
 
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
     println!("Jarl ballin |{}|",domain);
+
+    let service_home_dir = format!("www_{}_home_dir",domain);
 }
 
 // copied and refactored from official
