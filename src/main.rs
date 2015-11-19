@@ -322,6 +322,12 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
 
     let service_home_dir = format!("www_{}_home_dir",domain);
+    let the_dir = dir_helper.create(service_home_dir,
+                                    ::safe_nfs::UNVERSIONED_DIRECTORY_LISTING_TAG,
+                                    vec![],
+                                    false,
+                                    ::safe_nfs::AccessLevel::Public,
+                                    None);
 }
 
 // copied and refactored from official
