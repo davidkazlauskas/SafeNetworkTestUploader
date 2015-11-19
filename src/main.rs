@@ -4,6 +4,7 @@
 extern crate safe_core;
 extern crate safe_nfs;
 extern crate safe_dns;
+extern crate routing;
 extern crate regex;
 
 use std::env;
@@ -352,6 +353,9 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         Ok(structdata) => structdata,
         Err(err) => panic!("Could not add www service: {:?}",err),
     };
+
+    let post_res = client.lock().unwrap().post(
+        ::routing::data::Data::StructuredData(service),None);
 }
 
 // copied and refactored from official
