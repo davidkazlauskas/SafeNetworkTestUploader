@@ -320,6 +320,8 @@ fn download_routine_pub_dns(
 }
 
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
+    // REG DNS NAME FIRST
+
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
     let operations = ::safe_dns::dns_operations::DnsOperations::new(client.clone()).unwrap();
     let tr_domain = domain.trim().to_string();
