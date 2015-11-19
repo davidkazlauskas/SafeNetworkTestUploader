@@ -348,6 +348,12 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
                 "Cannot retrieve secret signing key: {:?}",err),
         };
 
+    let pubclientkey =
+        match client.lock().unwrap().get_public_signing_key() {
+            Ok(res) => res.clone(),
+            Err(err) => panic!("Could not retrieve public client key: {:?}",err),
+        };
+
     let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
 
     let service = match operations.add_service(&tr_domain,
