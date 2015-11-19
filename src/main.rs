@@ -355,6 +355,28 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         };
 
     let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
+    let owners = vec![pubclientkey];
+
+    let dns_struct_data =
+        match operations.register_dns(tr_domain.clone(),
+                                      &domain_pk,
+                                      &domain_sk,
+                                      &vec![],
+                                      owners,
+                                      &secret_sign_key,
+                                      None)
+        {
+            Ok(res) => res,
+            Err(err) => panic!("Could not make registration data: {:?}",err),
+        };
+
+    let dom_reg = client.lock().unwrap().put(
+        ::routing::data::Data::StructuredData(dns_struct_data),None);
+
+    match dom_reg {
+        Ok(_) => {},
+        Err(err) => panic!("Could not register domain: {:?}",err),
+    };
 
     let service = match operations.add_service(&tr_domain,
                                                ("www".to_string(),dir_key.clone()),
