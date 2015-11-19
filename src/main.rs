@@ -324,12 +324,18 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
     let tr_domain = domain.trim().to_string();
 
     let service_home_dir = format!("www_{}_home_dir",domain);
-    let the_dir = dir_helper.create(service_home_dir,
-                                    ::safe_nfs::UNVERSIONED_DIRECTORY_LISTING_TAG,
-                                    vec![],
-                                    false,
-                                    ::safe_nfs::AccessLevel::Public,
-                                    None);
+    let the_dir = match dir_helper.create(service_home_dir,
+                                          ::safe_nfs::UNVERSIONED_DIRECTORY_LISTING_TAG,
+                                          vec![],
+                                          false,
+                                          ::safe_nfs::AccessLevel::Public,
+                                          None)
+    {
+        Ok((dir,_)) => dir,
+        Err(err) => panic!("Cannot create directory: {:?}",err),
+    };
+
+    let dir_key = the_dir.get_key();
 
     let secret_sign_key =
         match client.lock().unwrap().get_secret_signing_key() {
