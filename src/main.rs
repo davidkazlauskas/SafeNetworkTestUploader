@@ -394,6 +394,7 @@ fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,pat
 fn print_usage() {
     println!("Usage (upload): uploadutil upl <local file> <remote folder>");
     println!("Usage (download): uploadutil dl <remote file> <local path>");
+    println!("Usage (reg www domain): uploadutil reg <domain>");
     println!("Usage (mkdir): uploadutil mkdir <remote path>");
     println!("Usage (test): uploadutil test");
 }
