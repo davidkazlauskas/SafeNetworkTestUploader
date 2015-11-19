@@ -56,7 +56,7 @@ fn login() -> Client {
         }
     }
 
-    let res = Client::log_in(keyword.clone(),pin.clone(),password.clone());
+    let res = Client::create_account(keyword.clone(),pin.clone(),password.clone());
     match res {
         Ok(login) => return login,
         Err(err) => {
@@ -318,6 +318,10 @@ fn download_routine_pub_dns(
     panic!("Should never be reached!");
 }
 
+fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
+    println!("Jarl ballin |{}|",domain);
+}
+
 // copied and refactored from official
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
@@ -427,6 +431,7 @@ fn main() {
         println!("Logged in");
         let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
 
+        reg_dns_routine(login_arc.clone(),the_args[2].clone());
     } else if command == "dl" {
         println!("Logging in (anonymous)...");
         let login = login_anon();
