@@ -328,6 +328,13 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
                                     false,
                                     ::safe_nfs::AccessLevel::Public,
                                     None);
+
+    let secret_sign_key =
+        match client.lock().unwrap().get_secret_signing_key() {
+            Ok(key) => key.clone(),
+            Err(err) => panic!(
+                "Cannot retrieve secret signing key: {:?}",err),
+        };
 }
 
 // copied and refactored from official
