@@ -354,7 +354,7 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         Err(err) => panic!("Could not add www service: {:?}",err),
     };
 
-    let post_res = client.lock().unwrap().post(
+    client.lock().unwrap().post(
         ::routing::data::Data::StructuredData(service),None);
 }
 
