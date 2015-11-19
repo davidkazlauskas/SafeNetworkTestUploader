@@ -116,54 +116,6 @@ pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::
 {
     let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
     dir_helper.get_user_root_directory_listing().unwrap()
-
-    //let topdir = get_directory_key(tokens);
-    //println!("SUBDIR|{}|",topdir);
-
-    //let mut dir =
-        //if topdir != "" {
-            //let (res,_) =
-                //dir_helper.create(
-                    //topdir,::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
-                    //Vec::new(),
-                    //true,
-                    //::safe_nfs::AccessLevel::Public,
-                    //None).unwrap();
-            //res
-        //} else {
-            //println!("Root returned");
-            //dir_helper.get_user_root_directory_listing().unwrap()
-        //};
-
-    //dir
-
-    //let mut current_dir_listing = match starting_directory {
-        //Some(directory_key) => {
-            //match dir_helper.get(directory_key) {
-                //Ok(dir) => dir,
-                //Err(err) => panic!("Could not extract directory."),
-            //}
-        //},
-        //None => {
-            //match dir_helper.get_user_root_directory_listing() {
-                //Ok(dir) => dir,
-                //Err(err) => panic!("Could not receive root directory."),
-            //}
-        //},
-    //};
-
-    //for it in tokens.iter() {
-        //current_dir_listing = {
-            //let current_dir_metadata = current_dir_listing
-                //.get_sub_directories()
-                //.iter()
-                //.find(|a| *a.get_name() == *it)
-                //.unwrap();
-            //dir_helper.get(current_dir_metadata.get_key()).unwrap()
-        //};
-    //}
-
-    //current_dir_listing
 }
 
 pub fn get_directory_key(tokens: &Vec<String>) -> String {
