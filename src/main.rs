@@ -343,6 +343,15 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
             Err(err) => panic!(
                 "Cannot retrieve secret signing key: {:?}",err),
         };
+
+    let service = match operations.add_service(&tr_domain,
+                                               ("www".to_string(),dir_key.clone()),
+                                               &secret_sign_key,
+                                               None)
+    {
+        Ok(structdata) => structdata,
+        Err(err) => panic!("Could not add www service: {:?}",err),
+    };
 }
 
 // copied and refactored from official
