@@ -1,0 +1,11 @@
+
+# register dns with www service
+./QuickUploader reg shizzle1
+
+# upload file at root directory of the dns
+# Cargo.toml -> /www_shizzle1_home_dir/doofus
+./QuickUploader upl Cargo.toml www_shizzle1_home_dir/doofus
+
+# download the file (as unregistered client)
+./QuickUploader dl www.shizzle1/doofus moo
+
