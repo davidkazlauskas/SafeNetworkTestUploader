@@ -4,6 +4,7 @@
 extern crate safe_core;
 extern crate safe_nfs;
 extern crate safe_dns;
+extern crate sodiumoxide;
 extern crate routing;
 extern crate regex;
 
@@ -346,6 +347,8 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
             Err(err) => panic!(
                 "Cannot retrieve secret signing key: {:?}",err),
         };
+
+    let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
 
     let service = match operations.add_service(&tr_domain,
                                                ("www".to_string(),dir_key.clone()),
