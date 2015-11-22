@@ -438,7 +438,7 @@ fn print_usage() {
     println!("Usage (reg www domain): uploadutil reg <domain>");
     println!("Usage (mkdir): uploadutil mkdir <remote path>");
     println!("Usage (test): uploadutil test");
-    println!("Usage (register user): uploadutil reg");
+    println!("Usage (register user): uploadutil regu");
 }
 
 fn main() {
@@ -489,7 +489,7 @@ fn main() {
         assert!( the_args.len() == 2, "Download routine expects three arguments." );
         test_routine(login_arc.clone());
         println!("Done!");
-    } else if command == "reg" {
+    } else if command == "regu" {
         println!("Registering user...");
         login(true);
         println!("Registered!");

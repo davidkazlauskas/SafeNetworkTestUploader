@@ -1,4 +1,7 @@
 
+# register user
+./QuickUploader regu
+
 # register dns with www service
 ./QuickUploader reg shizzle1
 
