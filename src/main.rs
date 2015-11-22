@@ -16,7 +16,7 @@ use std::io::prelude::*;
 use std::fs::File;
 use safe_core::client::Client;
 
-fn login() -> Client {
+fn login(register: bool) -> Client {
     let mut keyword = String::new();
     let mut pin = String::new();
     let mut password = String::new();
@@ -58,14 +58,19 @@ fn login() -> Client {
         }
     }
 
-    let res = Client::log_in(keyword.clone(),pin.clone(),password.clone());
-    match res {
-        Ok(login) => return login,
-        Err(err) => {
-            println!("Account doesn't exist, will be created...");
-            return Client::create_account(
-                keyword.clone(),pin.clone(),password.clone()).unwrap();
-        }
+    if !register {
+        let res = Client::log_in(keyword.clone(),pin.clone(),password.clone());
+        match res {
+            Ok(login) => return login,
+            Err(err) => {
+                println!("Account doesn't exist, will be created...");
+                return Client::create_account(
+                    keyword.clone(),pin.clone(),password.clone()).unwrap();
+            }
+        };
+    } else {
+        return Client::create_account(
+            keyword.clone(),pin.clone(),password.clone()).unwrap();
     }
 }
 
@@ -433,6 +438,7 @@ fn print_usage() {
     println!("Usage (reg www domain): uploadutil reg <domain>");
     println!("Usage (mkdir): uploadutil mkdir <remote path>");
     println!("Usage (test): uploadutil test");
+    println!("Usage (register user): uploadutil reg");
 }
 
 fn main() {
@@ -448,7 +454,7 @@ fn main() {
     let command = the_args[1].clone();
     if command == "upl" {
         println!("Logging in...");
-        let login = login();
+        let login = login(false);
         println!("Logged in");
         let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
 
@@ -459,7 +465,7 @@ fn main() {
         return;
     } else if command == "reg" {
         println!("Logging in...");
-        let login = login();
+        let login = login(false);
         println!("Logged in");
         let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
 
@@ -475,7 +481,7 @@ fn main() {
         println!("Done!");
     } else if command == "test" {
         println!("Logging in...");
-        let login = login();
+        let login = login(false);
         println!("Logged in");
         let login_arc = std::sync::Arc::new( std::sync::Mutex::new(login) );
 
@@ -483,5 +489,9 @@ fn main() {
         assert!( the_args.len() == 2, "Download routine expects three arguments." );
         test_routine(login_arc.clone());
         println!("Done!");
+    } else if command == "reg" {
+        println!("Registering user...");
+        login(true);
+        println!("Registered!");
     }
 }
