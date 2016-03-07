@@ -339,7 +339,7 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         };
 
     let dom_reg = client.lock().unwrap().put(
-        ::routing::data::Data::StructuredData(dns_struct_data),None);
+        ::routing::Data::Structured(dns_struct_data),None);
 
     match dom_reg {
         Ok(_) => {},
@@ -356,7 +356,7 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
     };
 
     client.lock().unwrap().post(
-        ::routing::data::Data::StructuredData(service),None);
+        ::routing::Data::Structured(service),None);
 }
 
 // copied and refactored from official
