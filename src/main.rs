@@ -2,10 +2,10 @@
 #![plugin(regex_macros)]
 
 extern crate safe_core;
-extern crate safe_nfs;
-extern crate safe_dns;
+//extern crate safe_nfs;
+//extern crate safe_dns;
 extern crate sodiumoxide;
-extern crate routing;
+//extern crate routing;
 extern crate regex;
 
 use std::env;
@@ -14,7 +14,7 @@ use std::io::BufReader;
 use std::io::BufWriter;
 use std::io::prelude::*;
 use std::fs::File;
-use safe_core::client::Client;
+use safe_core::core::client::Client;
 
 fn login(register: bool) -> Client {
     let mut keyword = String::new();
@@ -78,49 +78,9 @@ fn login_anon() -> Client {
     Client::create_unregistered_client().unwrap()
 }
 
-fn recursive_find_path(
-    tokens: &Vec< String >,num: usize,
-    root: ::safe_nfs::directory_listing::DirectoryListing,
-    dir_helper: ::safe_nfs::helper::directory_helper::DirectoryHelper)
-    -> ::safe_nfs::directory_listing::DirectoryListing
-{
-    if num < tokens.len() - 1 {
-        let current = tokens[num].clone();
-
-        let found = root.find_sub_directory(&current);
-        match found {
-            Some(val) => {
-                let thekey = val.get_key();
-                let next = dir_helper.get(thekey);
-                match next {
-                    Ok(val) => {
-                        recursive_find_path(tokens,num + 1,val,dir_helper)
-                    },
-                    Err(err) => {
-                        panic!("Could not retrieve by id: {:?}",err);
-                    },
-                }
-            },
-            None => {
-                panic!("Folder path {} doesn't exist.",current);
-            },
-        }
-    } else {
-        root
-    }
-}
-
 // copy/paste
 pub fn path_tokeniser(the_path: String) -> Vec<String> {
     the_path.split("/").filter(|a| !a.is_empty()).map(|a| a.to_string()).collect()
-}
-
-pub fn get_final_subdirectory(client            : ::std::sync::Arc<::std::sync::Mutex<::safe_core::client::Client>>,
-                              tokens            : &Vec<String>,
-                              starting_directory: Option<&::safe_nfs::metadata::directory_key::DirectoryKey>) -> ::safe_nfs::directory_listing::DirectoryListing
-{
-    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
-    dir_helper.get_user_root_directory_listing().unwrap()
 }
 
 pub fn get_directory_key(tokens: &Vec<String>) -> String {
@@ -136,75 +96,9 @@ pub fn get_directory_key(tokens: &Vec<String>) -> String {
 }
 
 fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
-    use safe_nfs::helper::writer::Writer;
-
-    let mut cont : Vec<u8> = Vec::with_capacity(1024 * 1024);
-    match File::open(&local_path) {
-        Ok(mut file) => file.read_to_end(&mut cont),
-        Err(err) => panic!("Cannot open local file."),
-    };
-
-    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
-    let rootdir = match dir_helper.get_user_root_directory_listing() {
-        Ok(val) => val,
-        Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
-    };
-
-    let tokenized = path_tokeniser(remote_path.clone());
-    let final_subdir = recursive_find_path(&tokenized,0,rootdir,dir_helper);
-    let tailfilename = tokenized.last().unwrap().clone();
-
-    println!("TAIL|{}|",tailfilename);
-
-    let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
-    match file_helper.create(tailfilename,Vec::new(),final_subdir) {
-        Ok(mut writer) =>  {
-            writer.write(&cont,0);
-            writer.close();
-        },
-        Err(err) => panic!("Cannot open remote file for writing."),
-    }
 }
 
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
-    use safe_nfs::helper::reader::Reader;
-
-    let tokenized = path_tokeniser(remote_path.clone());
-
-    let last_path = match tokenized.last() {
-        Some(path) => path.clone(),
-        None => panic!("Could not parse filename."),
-    };
-
-    println!("|{}|",last_path);
-
-    let final_subdir = get_final_subdirectory(client.clone(),&tokenized,None);
-    let file_helper = safe_nfs::helper::file_helper::FileHelper::new(client);
-
-    match final_subdir.find_file(&last_path) {
-        Some(reader_met) => {
-            let mut reader = file_helper.read(reader_met);
-            let size = reader.size();
-            let result = reader.read(0,size);
-            match result {
-                Ok(thevec) => {
-                    let mut localwriter = match File::create(&local_path) {
-                        Ok(writer) => BufWriter::new(writer),
-                        Err(err) => panic!("Could not open local file for writing."),
-                    };
-                    localwriter.write(&thevec);
-                },
-                Err(err) => panic!("Could not read remote file."),
-            };
-        },
-        None => {
-            panic!("File does not exist.");
-        }
-    }
-        //Ok(mut reader) => {
-        //},
-        //Err(err) => panic!("Could not open remote file."),
-    //}
 }
 
 fn download_routine_pub_dns(
@@ -220,62 +114,6 @@ fn download_routine_pub_dns(
         let name = i.at(2).unwrap().to_string();
         let file = i.at(3).unwrap().to_string();
 
-        let operations = ::safe_dns::dns_operations::DnsOperations
-            ::new_unregistered(client.clone());
-        let dir_key = operations
-            .get_service_home_directory_key(
-                &name,&service,None);
-        let tokenizedpath = path_tokeniser(file.clone());
-
-        match dir_key {
-            Ok(val) => {
-                let dir_helper = ::safe_nfs::helper::directory_helper
-                    ::DirectoryHelper::new(client.clone());
-                let listing = dir_helper.get(&val);
-
-                match listing {
-                    Ok(lst) => {
-                        let reslisting = recursive_find_path(
-                            &tokenizedpath,0,lst,dir_helper);
-                        let thefile = reslisting.find_file(
-                            tokenizedpath.last().unwrap());
-                        match thefile {
-                            Some(file) => {
-                                let file_helper = ::safe_nfs::helper::file_helper
-                                    ::FileHelper::new(client.clone());
-                                let mut reader = file_helper.read(file);
-                                let size = reader.size();
-                                let content = reader.read(0,size);
-                                match content {
-                                    Ok(bytes) => {
-                                        let mut localwriter = match File::create(&local_path) {
-                                            Ok(writer) => BufWriter::new(writer),
-                                            Err(err) => panic!("Could not open local file for writing."),
-                                        };
-
-                                        localwriter.write(&bytes);
-                                    },
-                                    Err(err) => {
-                                        panic!("Could not read file.");
-                                    },
-                                }
-                            },
-                            None => {
-                                panic!("No such file in such directory.");
-                            },
-                        }
-                    },
-                    Err(err) => {
-                        panic!("Listing not found: {:?}",err);
-                    },
-                };
-
-            },
-            Err(err) => {
-                panic!("Error, cannot open resource: {:?}",err);
-            },
-        };
-
         println!("Ze stuff:|{}|{}|{}|",service,name,file);
         return;
     }
@@ -285,151 +123,13 @@ fn download_routine_pub_dns(
 
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
     // REG DNS NAME FIRST
-
-    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
-    let operations = ::safe_dns::dns_operations::DnsOperations::new(client.clone()).unwrap();
-    let tr_domain = domain.trim().to_string();
-
-    let mut rootdir = match dir_helper.get_user_root_directory_listing() {
-        Ok(val) => val,
-        Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
-    };
-
-    let service_home_dir = format!("www_{}_home_dir",domain);
-    let the_dir = match dir_helper.create(service_home_dir,
-                                          ::safe_nfs::UNVERSIONED_DIRECTORY_LISTING_TAG,
-                                          vec![],
-                                          false,
-                                          ::safe_nfs::AccessLevel::Public,
-                                          Some(&mut rootdir))
-    {
-        Ok((dir,_)) => dir,
-        Err(err) => panic!("Cannot create directory: {:?}",err),
-    };
-
-    let dir_key = the_dir.get_key();
-
-    let secret_sign_key =
-        match client.lock().unwrap().get_secret_signing_key() {
-            Ok(key) => key.clone(),
-            Err(err) => panic!(
-                "Cannot retrieve secret signing key: {:?}",err),
-        };
-
-    let pubclientkey =
-        match client.lock().unwrap().get_public_signing_key() {
-            Ok(res) => res.clone(),
-            Err(err) => panic!("Could not retrieve public client key: {:?}",err),
-        };
-
-    let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
-    let owners = vec![pubclientkey];
-
-    let dns_struct_data =
-        match operations.register_dns(tr_domain.clone(),
-                                      &domain_pk,
-                                      &domain_sk,
-                                      &vec![],
-                                      owners,
-                                      &secret_sign_key,
-                                      None)
-        {
-            Ok(res) => res,
-            Err(err) => panic!("Could not make registration data: {:?}",err),
-        };
-
-    let dom_reg = client.lock().unwrap().put(
-        ::routing::Data::Structured(dns_struct_data),None);
-
-    match dom_reg {
-        Ok(_) => {},
-        Err(err) => panic!("Could not register domain: {:?}",err),
-    };
-
-    let service = match operations.add_service(&tr_domain,
-                                               ("www".to_string(),dir_key.clone()),
-                                               &secret_sign_key,
-                                               None)
-    {
-        Ok(structdata) => structdata,
-        Err(err) => panic!("Could not add www service: {:?}",err),
-    };
-
-    client.lock().unwrap().post(
-        ::routing::Data::Structured(service),None);
 }
 
 // copied and refactored from official
 fn test_routine(client: std::sync::Arc< std::sync::Mutex< Client > >) {
-    let dir_helper = ::safe_nfs::helper::directory_helper::DirectoryHelper::new(client.clone());
-    let (mut directory, _) = dir_helper.create("DirName".to_string(),
-                                                            ::safe_nfs::VERSIONED_DIRECTORY_LISTING_TAG,
-                                                            Vec::new(),
-                                                            true,
-                                                            ::safe_nfs::AccessLevel::Private,
-                                                            None).unwrap();
-    let file_helper = ::safe_nfs::helper::file_helper::FileHelper::new(client.clone());
-    let file_name = "hello.txt".to_string();
-    { // create
-        let mut writer = file_helper.create(file_name.clone(), Vec::new(), directory).unwrap();
-        writer.write(&vec![0u8; 100], 0);
-        let (updated_directory, _) = writer.close().unwrap();
-        directory = updated_directory;
-        assert!(directory.find_file(&file_name).is_some());
-    }
-    {// read
-        let file = directory.find_file(&file_name).unwrap();
-        let mut reader = file_helper.read(file);
-        let size = reader.size();
-        let readvec = reader.read(0,size).unwrap();
-        assert_eq!(readvec, vec![0u8; 100]);
-    }
-    {// update - full rewrite
-        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
-        let mut writer = file_helper.update_content(
-            file, ::safe_nfs::helper::writer::Mode::Overwrite, directory).unwrap();
-        writer.write(&vec![1u8; 50], 0);
-        let (updated_directory, _) = writer.close().unwrap();
-        directory = updated_directory;
-        let file = directory.find_file(&file_name).unwrap();
-        let mut reader = file_helper.read(file);
-        let size = reader.size();
-        assert_eq!(reader.read(0, size).unwrap(), vec![1u8; 50]);
-    }
-    {// update - partial rewrite
-        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
-        let mut writer = file_helper.update_content(
-            file, ::safe_nfs::helper::writer::Mode::Modify, directory).unwrap();
-        writer.write(&vec![2u8; 10], 0);
-        let (updated_directory, _) = writer.close().unwrap();
-        directory = updated_directory;
-        let file = directory.find_file(&file_name).unwrap();
-        let mut reader = file_helper.read(file);
-        let size = reader.size();
-        let data = reader.read(0, size).unwrap();
-        assert_eq!(&data[0..10], [2u8; 10]);
-        assert_eq!(&data[10..20], [1u8; 10]);
-    }
-    {// versions
-        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
-        let versions = file_helper.get_versions(&file, &directory).unwrap();
-        assert_eq!(versions.len(), 3);
-    }
-    {// Update Metadata
-        let mut file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
-        file.get_mut_metadata().set_user_metadata(vec![12u8; 10]);
-        let _ = file_helper.update_metadata(file, &mut directory).unwrap();
-        let file = directory.find_file(&file_name).map(|file| file.clone()).unwrap();
-        assert_eq!(*file.get_metadata().get_user_metadata(), vec![12u8; 10]);
-    }
-    {// Delete
-        let _ = file_helper.delete(file_name.clone(), &mut directory).unwrap();
-        assert!(directory.find_file(&file_name).is_none());
-    }
 }
 
 fn create_sub_directory(client: std::sync::Arc< std::sync::Mutex< Client > >,path: String) {
-    let dir_helper = safe_nfs::helper::directory_helper::DirectoryHelper::new(client);
 }
 
 fn print_usage() {

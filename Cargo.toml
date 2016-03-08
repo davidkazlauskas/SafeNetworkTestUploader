@@ -5,7 +5,7 @@ authors = ["David <david@templatious.org>"]
 
 [dependencies]
 # safe_core = { version="0.3.0", features=["use-mock-routing"] }
-#safe_core = "0.9.0"
+safe_core = "0.10.0"
 #safe_nfs = "0.6.0"
 #safe_dns = "0.6.0"
 safe_ffi = { git = "https://github.com/maidsafe/safe_ffi.git" }
