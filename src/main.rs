@@ -15,6 +15,9 @@ use std::io::BufWriter;
 use std::io::prelude::*;
 use std::fs::File;
 use safe_core::core::client::Client;
+use safe_core::nfs::helper::directory_helper::DirectoryHelper;
+use safe_core::nfs::helper::file_helper::FileHelper;
+use safe_core::nfs::helper::writer::Mode;
 
 fn login(register: bool) -> Client {
     let mut keyword = String::new();
