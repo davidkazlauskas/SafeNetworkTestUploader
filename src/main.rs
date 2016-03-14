@@ -180,6 +180,29 @@ fn download_routine_pub_dns(
         let dir_key = operations.get_service_home_directory_key(&name,&service,None);
         let tokenized_path = path_tokeniser(file.clone());
 
+        match dir_key {
+            Ok(val) => {
+                let dir_helper = DirectoryHelper::new(client.clone());
+                let listing = dir_helper.get(&val);
+
+                match listing {
+                    Ok(lst) => {
+                        let res_listing = recursive_find_path(
+                            &tokenized_path,0,lst,dir_helper);
+
+                        let the_file = res_listing.find_file(
+                            tokenized_path.last().unwrap());
+                    },
+                    Err(err) => {
+                        panic!("Listing not found: {:?}",err);
+                    },
+                }
+            },
+            Err(err) => {
+                panic!("Error, cannot open resource: {:?}",err);
+            },
+        }
+
         println!("Ze stuff:|{}|{}|{}|",service,name,file);
         return;
     }
