@@ -176,6 +176,10 @@ fn download_routine_pub_dns(
         let name = i.at(2).unwrap().to_string();
         let file = i.at(3).unwrap().to_string();
 
+        let operations = DnsOperations::new_unregistered(client.clone());
+        let dir_key = operations.get_service_home_directory_key(&name,&service,None);
+        let tokenized_path = path_tokeniser(file.clone());
+
         println!("Ze stuff:|{}|{}|{}|",service,name,file);
         return;
     }
