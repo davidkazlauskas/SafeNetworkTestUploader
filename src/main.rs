@@ -289,10 +289,14 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
             Err(err) => panic!("Could not make registration data: {:?}",err),
         };
 
-    let service = match dnsops.add_service(&trdomain,
+    let service = match dnsops.add_service(&trdomain.to_string(),
                                            ("www".to_string(),dir_key.clone()),
                                            &secret_sign_key,
-                                           None);
+                                           None)
+    {
+        Ok(res) => res,
+        Err(err) => panic!("Could not add www service: {:?}",err),
+    };
 }
 
 // copied and refactored from official
