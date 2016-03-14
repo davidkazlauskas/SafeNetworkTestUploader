@@ -155,6 +155,12 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
             Ok(key) => key.clone(),
             Err(err) => panic!("Could not retrieve secret signing key: {:?}",err),
         };
+
+    let pub_client_key =
+        match client.lock().unwrap().get_public_signing_key() {
+            Ok(res) => res.clone(),
+            Err(err) => panic!("Could not retrieve public client key: {:?}",err),
+        };
 }
 
 // copied and refactored from official
