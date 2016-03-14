@@ -127,8 +127,14 @@ fn download_routine_pub_dns(
 
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
     // REG DNS NAME FIRST
+    let dirhelper = DirectoryHelper::new(client.clone());
     let dnsops = DnsOperations::new(client.clone());
     let trdomain = domain.trim();
+
+    let mut rootdir = match dirhelper.get_user_root_directory_listing() {
+        Ok(val) => val,
+        Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
+    };
 }
 
 // copied and refactored from official
