@@ -106,6 +106,12 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
         Ok(mut file) => file.read_to_end(&mut cont),
         Err(err) => panic!("Cannot open local file."),
     };
+
+    let dir_helper = DirectoryHelper::new(client.clone());
+    let root_dir = match dir_helper.get_user_root_directory_listing() {
+        Ok(val) => val,
+        Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
+    };
 }
 
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
