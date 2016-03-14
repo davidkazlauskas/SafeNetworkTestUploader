@@ -18,6 +18,7 @@ use safe_core::core::client::Client;
 use safe_core::nfs::helper::directory_helper::DirectoryHelper;
 use safe_core::nfs::helper::file_helper::FileHelper;
 use safe_core::nfs::helper::writer::Writer;
+use safe_core::nfs::directory_listing::DirectoryListing;
 use safe_core::dns::dns_operations::DnsOperations;
 
 fn login(register: bool) -> Client {
@@ -82,6 +83,14 @@ fn login_anon() -> Client {
     Client::create_unregistered_client().unwrap()
 }
 
+fn recursive_find_path(
+    tokens: &Vec< String >,num: usize,
+    root: DirectoryListing,
+    dir_helper: DirectoryHelper)
+    -> DirectoryListing
+{
+}
+
 // copy/paste
 pub fn path_tokeniser(the_path: String) -> Vec<String> {
     the_path.split("/").filter(|a| !a.is_empty()).map(|a| a.to_string()).collect()
@@ -114,7 +123,7 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
     };
 
     let tokenized = path_tokeniser(remote_path.clone());
-    let final_subdir = recursive_find_path(&tokenized,0,rootdir,dir_helper);
+    let final_subdir = recursive_find_path(&tokenized,0,root_dir,dir_helper);
 }
 
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
