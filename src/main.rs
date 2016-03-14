@@ -112,6 +112,9 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
         Ok(val) => val,
         Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
     };
+
+    let tokenized = path_tokeniser(remote_path.clone());
+    let final_subdir = recursive_find_path(&tokenized,0,rootdir,dir_helper);
 }
 
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
