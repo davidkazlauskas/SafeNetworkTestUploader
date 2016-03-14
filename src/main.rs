@@ -137,6 +137,16 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
     };
 
     let service_home_dir = format!("www_{}_home_dir",trdomain);
+    let the_dir = match dirhelper.create(service_home_dir,
+                                          safe_core::nfs::UNVERSIONED_DIRECTORY_LISTING_TAG,
+                                          vec![],
+                                          false,
+                                          safe_core::nfs::AccessLevel::Public,
+                                          Some(&mut rootdir))
+    {
+        Ok((dir,_)) => dir,
+        Err(err) => panic!("Cannot create directory: {:?}",err),
+    };
 }
 
 // copied and refactored from official
