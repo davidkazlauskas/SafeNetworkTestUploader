@@ -17,7 +17,7 @@ use std::fs::File;
 use safe_core::core::client::Client;
 use safe_core::nfs::helper::directory_helper::DirectoryHelper;
 use safe_core::nfs::helper::file_helper::FileHelper;
-use safe_core::nfs::helper::writer::Mode;
+use safe_core::nfs::helper::writer::Writer;
 use safe_core::dns::dns_operations::DnsOperations;
 
 fn login(register: bool) -> Client {
@@ -100,6 +100,12 @@ pub fn get_directory_key(tokens: &Vec<String>) -> String {
 }
 
 fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
+    let mut cont : Vec<u8> = Vec::with_capacity(1024 * 1024);
+
+    match File::open(&local_path) {
+        Ok(mut file) => file.read_to_end(&mut cont),
+        Err(err) => panic!("Cannot open local file."),
+    };
 }
 
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {

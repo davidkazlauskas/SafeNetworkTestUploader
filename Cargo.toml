@@ -10,6 +10,7 @@ safe_core = "0.10.0"
 #safe_dns = "0.6.0"
 safe_ffi = { git = "https://github.com/maidsafe/safe_ffi.git" }
 sodiumoxide = "0.0.9"
+#routing = "0.11.1"
 #routing = "0.7.0"
 regex = "0.1.55"
 regex_macros = "0.1.31"
