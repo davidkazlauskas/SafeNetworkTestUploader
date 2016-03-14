@@ -161,6 +161,8 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
             Ok(res) => res.clone(),
             Err(err) => panic!("Could not retrieve public client key: {:?}",err),
         };
+
+    let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
 }
 
 // copied and refactored from official
