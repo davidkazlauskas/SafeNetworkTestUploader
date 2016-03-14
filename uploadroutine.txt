@@ -6,8 +6,8 @@
 ./QuickUploader reg goob
 
 # upload file at root directory of the dns
-# Cargo.toml -> /www_shizzle1_home_dir/doofus
-./QuickUploader upl Cargo.toml www_shizzle1_home_dir/doofus
+# Cargo.toml -> /www_goob_home_dir/doofus
+./QuickUploader upl Cargo.toml www_goob_home_dir/doofus
 
 # download the file (as unregistered client)
 ./QuickUploader dl www.goob/doofus moo
