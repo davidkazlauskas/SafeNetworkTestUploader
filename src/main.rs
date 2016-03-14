@@ -206,7 +206,7 @@ fn download_routine_pub_dns(
                                             Err(err) => panic!("Could not open local file for writing."),
                                         };
 
-                                        localwriter.writer(&bytes);
+                                        localwriter.write(&bytes);
                                     },
                                     Err(err) => {
                                         panic!("Could not read file.");
