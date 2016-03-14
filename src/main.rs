@@ -163,6 +163,7 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         };
 
     let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
+    let owners = vec![pub_client_key];
 }
 
 // copied and refactored from official
