@@ -147,6 +147,14 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         Ok((dir,_)) => dir,
         Err(err) => panic!("Cannot create directory: {:?}",err),
     };
+
+    let dir_key = the_dir.get_key();
+
+    let secret_sign_key =
+        match client.lock().unwrap().get_secret_signing_key() {
+            Ok(key) => key.clone(),
+            Err(err) => panic!("Could not retrieve secret signing key: {:?}",err),
+        };
 }
 
 // copied and refactored from official
