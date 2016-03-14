@@ -175,8 +175,8 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
             &secret_sign_key,
             None)
         {
-            Ok(_) => {},
-            Err(err) => panic!("Could not register domain: {:?}",err),
+            Ok(res) => res,
+            Err(err) => panic!("Could not make registration data: {:?}",err),
         };
 }
 
