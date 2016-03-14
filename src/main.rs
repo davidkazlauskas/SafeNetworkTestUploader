@@ -128,7 +128,7 @@ fn download_routine_pub_dns(
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
     // REG DNS NAME FIRST
     let dirhelper = DirectoryHelper::new(client.clone());
-    let dnsops = DnsOperations::new(client.clone());
+    let dnsops = DnsOperations::new(client.clone()).unwrap();
     let trdomain = domain.trim();
 
     let mut rootdir = match dirhelper.get_user_root_directory_listing() {
@@ -164,6 +164,20 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
 
     let (domain_pk,domain_sk) = sodiumoxide::crypto::box_::gen_keypair();
     let owners = vec![pub_client_key];
+
+    let dns_struct_data =
+        match dnsops.register_dns(
+            trdomain.to_string(),
+            &domain_pk,
+            &domain_sk,
+            &vec![],
+            owners,
+            &secret_sign_key,
+            None)
+        {
+            Ok(_) => {},
+            Err(err) => panic!("Could not register domain: {:?}",err),
+        };
 }
 
 // copied and refactored from official
