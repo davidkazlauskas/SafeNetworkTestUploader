@@ -89,6 +89,30 @@ fn recursive_find_path(
     dir_helper: DirectoryHelper)
     -> DirectoryListing
 {
+    if num < tokens.len() - 1 {
+        let current = tokens[num].clone();
+
+        let found = root.find_sub_directory(&current);
+        match found {
+            Some(val) => {
+                let thekey = val.get_key();
+                let next = dir_helper.get(thekey);
+                match next {
+                    Ok(val) => {
+                        recursive_find_path(tokens,num + 1,val,dir_helper)
+                    },
+                    Err(err) => {
+                        panic!("Could not retrieve by id: {:?}",err)
+                    },
+                }
+            },
+            None => {
+                panic!("Folder path {} doesn't exist.",current);
+            },
+        }
+    } else {
+        root
+    }
 }
 
 // copy/paste
