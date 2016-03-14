@@ -192,6 +192,31 @@ fn download_routine_pub_dns(
 
                         let the_file = res_listing.find_file(
                             tokenized_path.last().unwrap());
+
+                        match the_file {
+                            Some(file) => {
+                                let file_helper = FileHelper::new(client.clone());
+                                let mut reader = file_helper.read(file);
+                                let size = reader.size();
+                                let content = reader.read(0,size);
+                                match content {
+                                    Ok(bytes) => {
+                                        let mut localwriter = match File::create(&local_path) {
+                                            Ok(writer) => BufWriter::new(writer),
+                                            Err(err) => panic!("Could not open local file for writing."),
+                                        };
+
+                                        localwriter.writer(&bytes);
+                                    },
+                                    Err(err) => {
+                                        panic!("Could not read file.");
+                                    },
+                                }
+                            },
+                            None => {
+                                panic!("No such file in such directory.");
+                            },
+                        }
                     },
                     Err(err) => {
                         panic!("Listing not found: {:?}",err);
