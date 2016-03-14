@@ -128,6 +128,7 @@ fn download_routine_pub_dns(
 fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: String) {
     // REG DNS NAME FIRST
     let dnsops = DnsOperations::new(client.clone());
+    let trdomain = domain.trim();
 }
 
 // copied and refactored from official
