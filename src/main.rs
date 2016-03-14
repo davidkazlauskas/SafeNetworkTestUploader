@@ -135,6 +135,8 @@ fn reg_dns_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,domain: 
         Ok(val) => val,
         Err(err) => panic!("Could not retrieve user root directory: {:?}",err),
     };
+
+    let service_home_dir = format!("www_{}_home_dir",trdomain);
 }
 
 // copied and refactored from official
