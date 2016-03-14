@@ -148,6 +148,16 @@ fn upload_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_pat
 
     let tokenized = path_tokeniser(remote_path.clone());
     let final_subdir = recursive_find_path(&tokenized,0,root_dir,dir_helper);
+    let tail_file_name = tokenized.last().unwrap().clone();
+
+    let file_helper = FileHelper::new(client);
+    match file_helper.create(tail_file_name,Vec::new(),final_subdir) {
+        Ok(mut writer) => {
+            writer.write(&cont,0);
+            writer.close();
+        },
+        Err(err) => panic!("Could not open remote file for writing."),
+    }
 }
 
 fn download_routine(client: std::sync::Arc< std::sync::Mutex< Client > >,local_path: String,remote_path: String) {
